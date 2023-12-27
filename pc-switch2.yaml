@@ -1,0 +1,105 @@
+substitutions:
+  name: "pc"
+  uppercase_name: "PC"
+
+
+esphome:
+  name: "${name}"
+  platform: ESP8266
+  board: nodemcuv2
+
+  project:
+    name: "ajfriesen.pc-switch"
+    version: "1.0.0"
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+dashboard_import:
+  package_import_url: github://ajfriesen/pc-switch/pc-switch.yaml@main
+
+# Put ota password here
+ota:
+
+# Your wifi config
+wifi:
+  # ssid: ""
+  # password: ""
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "PC-Switch Fallback Hotspot"
+    password: "fallback-wifi"
+
+captive_portal:
+
+switch:
+  - platform: gpio
+    pin: D6
+    id: power_switch
+    internal: true
+    on_turn_on:
+    - delay: 5000ms
+    - switch.turn_off: power_switch
+
+  - platform: template
+    name: "Power Switch Force"
+    id: power_switch_force
+    internal: true
+    turn_on_action:
+      - delay: 5000ms
+      - switch.turn_off: power_switch
+    turn_off_action:
+      - delay: 5000ms
+      - switch.turn_off: power_switch
+
+#  - platform: gpio
+#    pin: D6
+#    id: power_switch_force
+#    internal: true
+#    on_turn_on:
+#    - delay: 5000ms
+#    - switch.turn_off: power_switch_force
+
+  - platform: gpio
+    pin: D7
+    id: reset_switch
+    on_turn_on:
+    - delay: 300ms
+    - switch.turn_off: reset_switch
+
+binary_sensor:
+  - platform: gpio
+    pin: D0
+    id: pc_power_sensor
+    name: "${name} Power State"
+    device_class: power
+    icon: "mdi:desktop-classic"
+
+button:
+  - platform: template
+    name: "${name} Power Button"
+    id: power_button
+    icon: "mdi:power-standby"
+    on_press:
+      then:
+        - switch.toggle: power_switch
+
+  - platform: template
+    name: "${name} Force Power Off"
+    id: force_power_off
+    icon: "mdi:power-plug-off"
+    on_press:
+      then:
+        - switch.toggle: power_switch_force
+
+  - platform: template
+    name: "${name} Reset Button"
+    id: reset_button
+    icon: "mdi:restart"
+    on_press:
+      then:
+        - switch.toggle: reset_switch
