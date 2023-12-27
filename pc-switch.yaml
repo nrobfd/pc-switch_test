@@ -45,13 +45,24 @@ switch:
     - delay: 300ms
     - switch.turn_off: power_switch
 
-  - platform: gpio
-    pin: D6
+  - platform: template
+    name: "Power Switch Force"
     id: power_switch_force
     internal: true
-    on_turn_on:
-    - delay: 5000ms
-    - switch.turn_off: power_switch_force
+    turn_on_action:
+      - delay: 5000ms
+      - switch.turn_off: power_switch
+    turn_off_action:
+      - delay: 5000ms
+      - switch.turn_off: power_switch
+
+#  - platform: gpio
+#    pin: D6
+#    id: power_switch_force
+#    internal: true
+#    on_turn_on:
+#    - delay: 5000ms
+#    - switch.turn_off: power_switch_force
 
   - platform: gpio
     pin: D7
