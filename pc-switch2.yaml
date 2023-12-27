@@ -15,7 +15,7 @@ esphome:
 # Enable logging
 logger:
 
-# Enable Home Assistant API
+# Enable Home Assistant APi
 api:
 
 dashboard_import:
